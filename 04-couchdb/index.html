@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <link rel="icon" href="data:;base64,iVBORw0KGgo="> <!-- Set blank favicon -->
+
+    <title>Temperatures in CouchDB</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="app.js"></script>
+  </head>
+  <body>
+    <h1>Temperatures in CouchDB</h1>
+
+    <h2>Create a new patient</h2>
+
+    <p id="patient-div">
+      <label for="patient-input">Patient's name:</label>
+      <input type="text" label="patient-input" id="patient-input"></input>
+      <button id="patient-button">Create</button>
+    </p>
+
+    <h2>Temperatures of one patient</h2>
+
+    <p>
+      <label for="patient-select">Choose a patient:</label>
+      <select name="patient-select" id="patient-select">
+      </select>
+    </p>
+
+    <p style="visibility:hidden" id="temperature-div">
+      <label for="temperature-input">Record a temperature:</label>
+      <input type="text" label="temperature-input" id="temperature-input"></input> °C
+      <button id="temperature-button">Add</button>
+    </p>
+
+    <div style="position: relative; height:40vh; width:80vw">
+      <canvas id="temperatures"></canvas>
+    </div>
+  </body>
+</html>
