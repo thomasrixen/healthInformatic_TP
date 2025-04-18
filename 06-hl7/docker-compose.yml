@@ -1,0 +1,41 @@
+services:
+    db:
+        image: jodogne/openmrs-reference-application-db:2.13
+        command: "mysqld --character-set-server=utf8 --collation-server=utf8_general_ci"
+        healthcheck:
+            test: "mysql -hlocalhost --protocol=TCP --user=root --password=root --execute \"SHOW DATABASES;\""
+            interval: 3s
+            timeout: 1s
+            retries: 20
+        environment:
+            MYSQL_ROOT_PASSWORD: "root"
+            MYSQL_DATABASE: "openmrs"
+
+    openmrs:
+        image: openmrs/openmrs-reference-application:2.13
+        depends_on:
+            db:
+                condition: service_healthy
+        healthcheck:
+            test: "test $(curl -u admin:Admin123 -s -o /dev/null -w '%{http_code}' http://localhost:8080/openmrs/ws/fhir2/R4/Patient) -eq 200"
+            interval: 3s
+            timeout: 1s
+            retries: 90  # Starting OpenMRS can take more than 1 minute on slow computers
+        ports:
+            - "8003:8080"
+        environment:
+            OMRS_CONFIG_MODULE_WEB_ADMIN: "true"
+            OMRS_CONFIG_AUTO_UPDATE_DATABASE: "false"
+            OMRS_CONFIG_CREATE_TABLES: "false"
+            OMRS_CONFIG_CONNECTION_SERVER: db
+            OMRS_CONFIG_CONNECTION_DATABASE: "openmrs"
+            OMRS_CONFIG_CONNECTION_USERNAME: "root"
+            OMRS_CONFIG_CONNECTION_PASSWORD: "root"
+
+    indexupdate:
+        # This post-execution command is needed to have lookups for concepts working (e.g. for conditions)
+        image: curlimages/curl:8.12.1
+        depends_on:
+            openmrs:
+                condition: service_healthy
+        command: "curl -X POST -u admin:Admin123 http://openmrs:8080/openmrs/ws/rest/v1/searchindexupdate -d ''"

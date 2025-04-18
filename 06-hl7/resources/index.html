@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <link rel="icon" href="data:;base64,iVBORw0KGgo="> <!-- Set blank favicon -->
+
+    <title>HL7 messages</title>
+
+  </head>
+  <body>
+    <h1>HL7 messages</h1>
+
+    <h2>(1) Send <tt>ADT^A04</tt> message to register a patient</h2>
+
+    <p>
+      <label for="create-patient-custom-id">Custom patient ID:</label>
+      <input type="text" label="create-patient-custom-id" id="create-patient-custom-id" value="2222"></input>
+    </p>
+
+    <p>
+      <label for="create-patient-given-name">Given name:</label>
+      <input type="text" label="create-patient-given-name" id="create-patient-given-name" value="Adam"></input>
+    </p>
+
+    <p>
+      <label for="create-patient-family-name">Family name:</label>
+      <input type="text" label="create-patient-given-name" id="create-patient-family-name" value="Smith"></input>
+    </p>
+
+    <p>
+      <label for="create-patient-gender">Gender:</label>
+      <input type="radio" label="create-patient-gender" name="create-patient-gender" value="F" checked="" />
+      <label for="F">F</label>
+      <input type="radio" name="create-patient-gender" value="M" />
+      <label for="M">M</label>
+      <input type="radio" name="create-patient-gender" value="X" />
+      <label for="X">X</label>
+    </p>
+
+    <p>
+      <label for="create-patient-birth-date">Birth date:</label>
+      <input type="date" label="create-patient-birth-date" id="create-patient-birth-date" value="2020-03-02"></input>
+    </p>
+
+    <p>
+      <button id="create-patient-button">Send HL7 message</button>
+    </p>
+
+
+    <h2>(2) Look for a patient by custom ID</h2>
+
+    <p>
+      <label for="find-patient-custom-id">Custom patient ID:</label>
+      <input type="text" label="find-patient-custom-id" id="find-patient-custom-id"></input>
+    </p>
+
+    <p>
+      <button id="find-patient-button">Open patient in OpenMRS</button>
+    </p>
+
+
+    <h2>(3) Send <tt>ORU^R01</tt> message to record a visit note</h2>
+
+    <p>
+      <label for="record-note-custom-id">Custom patient ID:</label>
+      <input type="text" label="record-note-custom-id" id="record-note-custom-id"></input>
+    </p>
+
+    <p>
+      <label for="record-note-content">Visit note:</label>
+      <input type="text" label="record-note-content" id="record-note-content" value="Hello, world!"></input>
+    </p>
+
+    <p>
+      <button id="record-note-button">Record note</button>
+    </p>
+
+
+    <h2>(4) Send <tt>ORU^R01</tt> message to record vitals</h2>
+
+    <p>
+      <label for="record-vitals-custom-id">Custom patient ID:</label>
+      <input type="text" label="record-vitals-custom-id" id="record-vitals-custom-id"></input>
+    </p>
+
+    <p>
+      <label for="record-vitals-temperature">Temperature:</label>
+      <input type="text" label="record-vitals-temperature" id="record-vitals-temperature" value="37.2"></input>
+    </p>
+
+    <p>
+      <label for="record-vitals-weight">Weight:</label>
+      <input type="text" label="record-vitals-weight" id="record-vitals-weight" value="85"></input>
+    </p>
+
+    <p>
+      <button id="record-vitals-button">Record vitals</button>
+    </p>
+
+    
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

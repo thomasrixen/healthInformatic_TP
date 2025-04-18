@@ -1,0 +1,7 @@
+MSH|^~\&|MS4_AZ|UCLOUVAIN|STUDENT|INGINIOUS|20180301010000||ORU^R01|IHS-20180301110000.00120|P|2.1
+PID|1||3333333333^^^NHS||SMITH^FREDRICA^J^^MRS^^L|||F
+ORC|RE||R3464105_20181016131600^CSFLIS_LAB|^||||||||213322^KRAT^DAVID^JOHN^^^58089285^^^^^^DN||||^|
+OBR|1||R3464105_20181016131600^CSFLIS_LAB|Visit Note|||20181017171201|||^|L||||^|213322^KRAT^DAVID^JOHN^^^5871925^^^^^^DN|^||||45891|20181016131605||CCOR|F||^^^^||||||||||
+OBX|1|NM|3141-9^Body weight Measured^LN^BWm^Body weight Measured^99USL^2.44^^patient weight measured in kg||59.5|kg^kilogram^UCUM|||||O|||20130116|||||||||||||||SCI
+OBX|2|TX|11488-4^Consult note||Family History: Colon Cancer Mother 57
+OBX|3|TX|85202^Transcription Authentication Interface Message Text|1|Transcription Authentication Interface Message Text||||||F

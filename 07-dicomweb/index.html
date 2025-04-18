@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="icon" href="data:;base64,iVBORw0KGgo="> <!-- Set blank favicon -->
+
+    <title>DICOMweb lookup and viewer</title>
+    <style>
+      html, body {
+          width: 100%;
+          height: 100%;
+          margin: 0px;
+          border: 0;
+          overflow: hidden; /*  Disable scrollbars */
+          display: block;  /* No floating content on sides */
+      }
+
+      #menu {
+          position: absolute;
+          left: 0%;
+          top: 0%;
+          width: 100%;
+          height: 15em;  /* Height of 15 lines of text */
+          background-color: lightgray;
+      }
+      
+      #display {
+          position: absolute;
+          left: 0%;
+          top: 15em;
+          width: 100%;
+          bottom: 0px;
+          background-color: black;
+      }
+
+      #dicom {
+          /* This adjusts the image to its container */
+          display: block;
+          margin-left: auto;
+          margin-right: auto;
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+      }
+    </style>
+  </head>
+  
+  <body>
+    <div id="menu">
+      <p align="center">
+        <b>DICOMweb lookup and viewer</b>
+      </p>
+      
+      <p align="center">
+        Patient ID: <input id="patient-id" type="text"></input>&nbsp;&nbsp;&nbsp;&nbsp;
+        Patient Name: <input id="patient-name" type="text"></input>&nbsp;&nbsp;&nbsp;&nbsp;
+        Study description: <input id="study-description" type="text"></input>
+      </p>
+      
+      <p align="center">
+        <button id="lookup">Lookup!</button>
+      </p>
+      
+      <p align="center">
+        Select DICOM study: <select id="studies"></select>
+      </p>
+      
+      <p align="center">
+        Select DICOM series: <select id="series"></select>
+      </p>
+
+      <p align="center">
+        Instances:
+        <input type="range" id="instances" min="0" max="0" value="0" />
+      </p>
+    </div>
+    
+    <div id="display">
+      <img id="dicom">
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
