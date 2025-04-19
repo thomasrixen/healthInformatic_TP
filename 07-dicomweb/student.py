@@ -65,8 +65,48 @@ def lookup_studies():
     # and "study-instance-uid" is the DICOM identifier of the matching
     # study.
 
-    # TODO
-    return flask.Response('Not Implemented\n', 501)
+    data = flask.request.get_json()
+
+    # Check required fields
+    if not data:
+        return flask.Response('Bad Request\n', 400)
+    # Check if any of the required fields are missing
+    if 'patient-id' not in data or 'patient-name' not in data or 'study-description' not in data:
+        return flask.Response('Bad Request\n', 400)
+
+
+    # Build criteria for QIDO-RS
+    criteria = {}
+    if data['patient-id']:
+        criteria['PatientID'] = data['patient-id']
+    if data['patient-name']:
+        criteria['PatientName'] = data['patient-name']
+    if data['study-description']:
+        criteria['StudyDescription'] = data['study-description']
+
+    # Connect to Orthanc demo server
+    client = DICOMwebClient.DICOMwebClient(
+        url='https://orthanc.uclouvain.be/demo/dicom-web/'
+    )
+
+    # Perform query
+    studies = client.lookupStudies(criteria, onlyIdentifiers=False)
+
+    results = []
+    for study in studies:
+        patient_id = study.get('00100020', {}).get('Value', [''])[0]
+        patient_name = study.get('00100010', {}).get('Value', [{}])[0].get('Alphabetic', '')
+        study_description = study.get('00081030', {}).get('Value', [''])[0]
+        study_uid = study.get('0020000D', {}).get('Value', [''])[0]
+
+        results.append({
+            'patient-id': patient_id,
+            'patient-name': patient_name,
+            'study-description': study_description,
+            'study-instance-uid': study_uid,
+        })
+
+    return flask.jsonify(results)
         
 
 @app.route('/lookup-series', methods = [ 'POST' ])
@@ -91,8 +131,35 @@ def lookup_series():
     # and "series-instance-uid" is the DICOM identifier of the
     # matching series.
     
-    # TODO
-    return flask.Response('Not Implemented\n', 501)
+    
+    data = flask.request.get_json()
+
+    # 400 if missing or empty
+    if 'study-instance-uid' not in data or not data['study-instance-uid'].strip():
+        return flask.Response('Missing or empty study-instance-uid\n', 400)
+
+    study_uid = data['study-instance-uid']
+
+    client = DICOMwebClient.DICOMwebClient(
+        url='https://orthanc.uclouvain.be/demo/dicom-web/'
+    )
+
+    # Send query
+    series_list = client.lookupSeries({ 'StudyInstanceUID': study_uid }, onlyIdentifiers=False)
+
+    # 404 if nothing found
+    if not series_list:
+        return flask.Response('No matching series\n', 404)
+
+    results = []
+    for series in series_list:
+        results.append({
+            'modality': series.get('00080060', {}).get('Value', [''])[0],
+            'series-description': series.get('0008103E', {}).get('Value', [''])[0],
+            'series-instance-uid': series.get('0020000E', {}).get('Value', [''])[0],
+        })
+
+    return flask.jsonify(results)
 
 
 @app.route('/lookup-instances', methods = [ 'POST' ])
@@ -120,8 +187,39 @@ def lookup_instances():
     # viewer. Pay attention to the fact that this tag can be absent,
     # in which case you can assume that it equals "1".
     
-    # TODO
-    return flask.Response('Not Implemented\n', 501)
+    data = flask.request.get_json()
+
+    # Check presence and non-empty values
+    if ('study-instance-uid' not in data or not data['study-instance-uid'].strip() or
+        'series-instance-uid' not in data or not data['series-instance-uid'].strip()):
+        return flask.Response('Missing or empty study/series instance UID\n', 400)
+
+    study_uid = data['study-instance-uid']
+    series_uid = data['series-instance-uid']
+
+    client = DICOMwebClient.DICOMwebClient(
+        url='https://orthanc.uclouvain.be/demo/dicom-web/'
+    )
+
+    # Lookup all instances in that series
+    instances = client.lookupInstances({
+        'StudyInstanceUID': study_uid,
+        'SeriesInstanceUID': series_uid
+    }, onlyIdentifiers=False)
+
+    if not instances:
+        return flask.Response('No matching instances\n', 404)
+
+    # Extract UID + instance number (default = 1)
+    def get_instance_info(instance):
+        sop_uid = instance.get('00080018', {}).get('Value', [''])[0]
+        instance_number = instance.get('00200013', {}).get('Value', [1])[0]
+        return (int(instance_number) if isinstance(instance_number, int) else 1, sop_uid)
+
+    sorted_instances = sorted([get_instance_info(i) for i in instances])
+    sop_uids = [sop_uid for _, sop_uid in sorted_instances]
+
+    return flask.jsonify(sop_uids)
 
 
 @app.route('/render-instance', methods = [ 'POST' ])
@@ -140,8 +238,33 @@ def render_instance():
     #
     # Outputs: The body of the HTTP response must contain a PNG file.
     
-    # TODO
-    return flask.Response('Not Implemented\n', 501)
+    data = flask.request.get_json()
+
+    # Step 1: Validate input
+    if ('study-instance-uid' not in data or not data['study-instance-uid'].strip() or
+        'series-instance-uid' not in data or not data['series-instance-uid'].strip() or
+        'sop-instance-uid' not in data or not data['sop-instance-uid'].strip()):
+        return flask.Response('Missing or empty UID field\n', 400)
+
+    study_uid = data['study-instance-uid']
+    series_uid = data['series-instance-uid']
+    sop_uid = data['sop-instance-uid']
+
+    client = DICOMwebClient.DICOMwebClient(
+        url='https://orthanc.uclouvain.be/demo/dicom-web/'
+    )
+
+    # Step 2: Try to get the rendered PNG
+    try:
+        png_data = client.getRenderedInstance(
+            study_uid, series_uid, sop_uid, decode=False
+        )
+    except:
+        return flask.Response('Instance not found\n', 404)
+
+    # Step 3: Return the PNG image
+    return flask.Response(png_data, mimetype='image/png')
+    
 
 
 if __name__ == '__main__':

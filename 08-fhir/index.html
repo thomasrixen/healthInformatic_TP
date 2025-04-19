@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <link rel="icon" href="data:;base64,iVBORw0KGgo="> <!-- Set blank favicon -->
+
+    <title>Clinical notes in OpenMRS</title>
+
+  </head>
+  <body>
+    <h1>Clinical notes in OpenMRS</h1>
+
+    <h2>(1) Create a new patient</h2>
+
+    <p>
+      <label for="patient-given-name">Given name:</label>
+      <input type="text" label="patient-given-name" id="patient-given-name"></input>
+    </p>
+
+    <p>
+      <label for="patient-family-name">Family name:</label>
+      <input type="text" label="patient-given-name" id="patient-family-name"></input>
+    </p>
+
+    <p>
+      <label for="patient-gender">Gender:</label>
+      <input type="radio" label="patient-gender" name="patient-gender" value="F" checked="" />
+      <label for="F">F</label>
+      <input type="radio" name="patient-gender" value="M" />
+      <label for="M">M</label>
+      <input type="radio" name="patient-gender" value="X" />
+      <label for="X">X</label>
+    </p>
+
+    <p>
+      <label for="patient-birth-date">Birth date:</label>
+      <input type="date" label="patient-birth-date" id="patient-birth-date"></input>
+    </p>
+
+    <p>
+      <button id="create-button">Create</button>
+    </p>
+
+    <h2>(2) Search for patients</h2>
+
+    <p>
+      <label for="search-criteria">Search criteria:</label>
+      <input type="text" label="search-criteria" id="search-criteria"></input>
+    </p>
+
+    <p>
+      <button id="search-button">Search</button>
+    </p>
+
+    <p>
+      Search results:
+    </p>
+
+    <table border="1">
+      <thead>
+        <tr>
+          <th>Identifier</th>
+          <th>Name</th>
+          <th>Gender</th>
+          <th>Age</th>
+          <th>Birth date</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="search-results">
+      </tbody>
+    </table>
+
+    <h2>(3) Clinical notes for selected patient</h2>
+
+    <div style="display:none" id="selected-patient">
+      <p>
+        Patient's identifier: <span id="selected-patient-id">
+      </p>
+      <p>
+        Patient's name: <span id="selected-patient-name">
+      </p>
+      <p>
+        Patient's gender: <span id="selected-patient-gender">
+      </p>
+      <p>
+        Patient's birth date: <span id="selected-patient-birth-date">
+      </p>
+
+      <p>
+        <button id="selected-patient-open-visit">Open visit in OpenMRS</button>
+      </p>
+
+      <p>
+        Clinical notes:
+      </p>      
+      <table border="1">
+        <thead>
+          <tr>
+            <th>Date time</th>
+            <th>Text</th>
+          </tr>
+        </thead>
+        <tbody id="clinical-notes">
+        </tbody>
+      </table>
+
+      <p>
+        Create new note:
+      </p>
+
+      <textarea id="new-note" name="new-note" rows="5" cols="80"></textarea>
+
+      <p>
+        <button id="record-note">Record note</button>
+      </p>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
